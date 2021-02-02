@@ -1,0 +1,10 @@
+*.pyc
+*.pyo
+*.mo
+*.nvda-addon
+
+.sconsign.dblite
+addon/manifest.ini
+addon/doc/*/*.html
+__pycache__/
+addon/globalPlugins/crypto_info/__pycache__/
