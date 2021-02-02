@@ -6,6 +6,13 @@ https://habr.com/ru/post/86303/
 """
 
 import re
+
+def replace(old, new, str, caseinsentive = False):
+	if caseinsentive:
+		return str.replace(old, new)
+	else:
+		return re.sub(re.escape(old), new, str, flags=re.IGNORECASE)
+
 class TextNormalizer():
 	"""Translates the letters of the alphabet mixed in normal"""
 
@@ -22,10 +29,13 @@ class TextNormalizer():
 		"""
 
 		newword = word
+		# если есть цифры - не меняем
+		if re.match("[24579]", newword):
+			return newword
 		OnlyRu = "БбвГгДдЁёЖжЗзИиЙйЛлмнПптУФфЦцЧчШшЩщЪъЫыЬьЭэЮюЯя"
 		OnlyEn = "DdFfGghIiJjLlNQqRrSstUVvWwYZz"
-		Rus = "АаВЕеКкМНОоРрСсТуХхЗО1тиа@пьб"
-		Eng = "AaBEeKkMHOoPpCcTyXx30imu@anb6"
+		Rus = "АаВЕеКкМНОоРрСсТуХхЗО1тиапьб"
+		Eng = "AaBEeKkMHOoPpCcTyXx30imu@nb6"
 
 		IsRu100percent = False
 		for c1 in word:
@@ -80,9 +90,28 @@ class TextNormalizer():
 			newWord = self.CheckWord(word)
 			if self.Changes:
 				newText = newText.replace(word, newWord)
+		Rus = ["с", "у", "нет", "ее"]
+		Eng = ["c", "y", "heт", "ee"]
 		if text != newText:
-			newText = newText.replace("Y", "У").replace("B", "В")
-			newText = newText.replace("C", "С").replace("мрз", "mp3").replace("HET", "НЕТ")
+			newText = newText.replace("B", "В").replace("H", "Н")
+			for i in range(0, len(Rus)):
+				newText = replace(Eng[i], Rus[i], newText, False)
+			patterns = [
+				"[cс][kк][oо][pр][еe]",
+				"[kк][yу][pр][сc]",
+				"[kк][yу][pр][сc][eе]",
+				"[s][kк][yу][pр][eе]",
+				r"[a]([a-zа-яё\s,:.?!]+)"
+			]
+			replaces = [
+			"скорее",
+			"курс",
+			"курсе",
+			"skype",
+			r"а\1"
+			]
+			for i in range(0, len(patterns)):
+				newText = re.sub(patterns[i], replaces[i], newText, flags=re.IGNORECASE)
 		return newText
 
 def main():
