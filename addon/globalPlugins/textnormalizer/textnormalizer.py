@@ -7,18 +7,19 @@ https://habr.com/ru/post/86303/
 
 import re
 
-def replace(old, new, str, caseinsentive = False):
-	if caseinsentive:
-		return str.replace(old, new)
-	else:
-		return re.sub(re.escape(old), new, str, flags=re.IGNORECASE)
-
 class TextNormalizer():
 	"""Translates the letters of the alphabet mixed in normal"""
 
 	lang = "?"
 	Changes = False
-	def CheckWord(self, word):
+
+	def replace(self, old, new, str, caseinsentive = False):
+		if caseinsentive:
+			return str.replace(old, new)
+		else:
+			return re.sub(re.escape(old), new, str, flags=re.IGNORECASE)
+
+	def CheckWord(self, word, change_case = True):
 		"""Check the word
 
 		Args:
@@ -30,7 +31,10 @@ class TextNormalizer():
 
 		newword = word
 		# если есть цифры - не меняем
-		if re.match("[24579]", newword):
+		if re.search("[24579]", newword):
+			return newword
+		# если в конце русского слова цифра - не меняем
+		if re.search("^[а-яё]+[0-9]$", newword):
 			return newword
 		OnlyRu = "БбвГгДдЁёЖжЗзИиЙйЛлмнПптУФфЦцЧчШшЩщЪъЫыЬьЭэЮюЯя"
 		OnlyEn = "DdFfGghIiJjLlNQqRrSstUVvWwYZz"
@@ -73,9 +77,10 @@ class TextNormalizer():
 		# Были ли замены?
 		self.Changes = newword != word
 		newword = newword.lower()
+		if self.Changes and change_case: newword = newword.capitalize()
 		return newword
 
-	def CheckText(self, text):
+	def CheckText(self, text, change_case = True):
 		"""Normalize the text
 
 		Args:
@@ -87,7 +92,7 @@ class TextNormalizer():
 
 		newText = text
 		for word in re.findall("[\\w\\@]+", text, re.DOTALL + re.IGNORECASE):
-			newWord = self.CheckWord(word)
+			newWord = self.CheckWord(word, change_case)
 			if self.Changes:
 				newText = newText.replace(word, newWord)
 		Rus = ["с", "у", "нет", "ее"]
@@ -95,20 +100,22 @@ class TextNormalizer():
 		if text != newText:
 			newText = newText.replace("B", "В").replace("H", "Н")
 			for i in range(0, len(Rus)):
-				newText = replace(Eng[i], Rus[i], newText, False)
+				newText = self.replace(Eng[i], Rus[i], newText, False)
 			patterns = [
 				"[cс][kк][oо][pр][еe]",
 				"[kк][yу][pр][сc]",
 				"[kк][yу][pр][сc][eе]",
 				"[s][kк][yу][pр][eе]",
-				r"[a]([a-zа-яё\s,:.?!]+)"
+				r"[a]([^dfgjmnqrsvwz]+)",
+				"[Hн][eе][tт]"
 			]
 			replaces = [
 			"скорее",
 			"курс",
 			"курсе",
 			"skype",
-			r"а\1"
+			r"а\1",
+			"нет"
 			]
 			for i in range(0, len(patterns)):
 				newText = re.sub(patterns[i], replaces[i], newText, flags=re.IGNORECASE)

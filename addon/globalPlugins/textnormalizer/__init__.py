@@ -23,7 +23,8 @@ addonHandler.initTranslation()
 if "TextNormalizer" not in config.conf: config.conf["TextNormalizer"]={}
 default_conf = {
 	"copyToClipBoard": True,
-	"autoNormalize": True
+	"autoNormalize": True,
+	"change_case": True
 }
 
 for t in default_conf:
@@ -50,6 +51,10 @@ class TextNormalizerSettingsDialog(gui.SettingsDialog):
 		self.autoNormalize.SetValue(tobool(config.conf["TextNormalizer"]["autoNormalize"]))
 		settingsSizerHelper.addItem(self.autoNormalize)
 
+		self.change_case_checkbox = wx.CheckBox(self, label=_("&Capitalize first letter"))
+		self.change_case_checkbox.SetValue(tobool(config.conf["TextNormalizer"]["change_case"]))
+		settingsSizerHelper.addItem(self.change_case_checkbox)
+
 		self.source_text = settingsSizerHelper.addLabeledControl(_("&Source text:"), wx.TextCtrl, value="")
 		settingsSizerHelper.addItem(self.source_text)
 		self.normalize_text = wx.Button(self, label=_("&Normalize entered text"))
@@ -63,7 +68,9 @@ class TextNormalizerSettingsDialog(gui.SettingsDialog):
 		self.source_text.SetFocus()
 
 	def onNormalize_text(self, event):
-		self.normalized_text.Value = tn.CheckText(self.source_text.Value)
+		config.conf["TextNormalizer"]["change_case"] = self.change_case_checkbox.Value
+		change_case = config.conf["TextNormalizer"]["change_case"]
+		self.normalized_text.Value = tn.CheckText(self.source_text.Value, change_case)
 		self.normalized_text.SetFocus()
 
 	def _save_settings(self):
@@ -81,6 +88,7 @@ class TextNormalizerSettingsDialog(gui.SettingsDialog):
 	def onOk(self, event):
 		config.conf["TextNormalizer"]["copyToClipBoard"] = self.copyToClipBoard.Value
 		config.conf["TextNormalizer"]["autoNormalize"] = self.autoNormalize.Value
+		config.conf["TextNormalizer"]["change_case"] = self.change_case_checkbox.Value
 		# self._save_settings()
 		super(TextNormalizerSettingsDialog, self).onOk(event)
 
@@ -93,10 +101,11 @@ class TextNormalizerThr(threading.Thread):
 		self.start()
 
 	def run(self):
+		change_case = config.conf["TextNormalizer"]["change_case"]
 		if isinstance(self._kwargs["text"], str):
-			self._kwargs["text"] = tn.CheckText(self._kwargs["text"])
+			self._kwargs["text"] = tn.CheckText(self._kwargs["text"], change_case)
 		else:
-			self._kwargs["text"] = [tn.CheckText(txt) for txt in self._kwargs["text"]]
+			self._kwargs["text"] = [tn.CheckText(txt, change_case) for txt in self._kwargs["text"]]
 
 		wx.CallAfter(self._callback, self._kwargs["text"])
 
@@ -117,7 +126,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	def speakDecorator(self, speak):
 		def my_speak(speechSequence, *args, **kwargs):
-			try: braille.handler.message(" ".join(speechSequence))
+			try: braille.handler.message(txt)
 			except: pass
 			return speak(speechSequence, *args, **kwargs)
 		def wrapper(speechSequence, *args, **kwargs):
@@ -128,7 +137,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				return False
 			if not tobool(config.conf["TextNormalizer"]["autoNormalize"]) or checkByCharacters(speechSequence):
 				return speak(speechSequence, *args, **kwargs)
-			text=" ".join([tn.CheckText(i) for i in speechSequence if isinstance(i, str)])
+			change_case = config.conf["TextNormalizer"]["change_case"]
+			text=" ".join([tn.CheckText(i, change_case) for i in speechSequence if isinstance(i, str)])
 			return speak([text], *args, **kwargs)
 		return wrapper
 

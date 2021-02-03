@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 'textnormalizer' '2021.02.01'\n"
+"Project-Id-Version: 'textnormalizer' '2021.02.03'\n"
 "Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
-"POT-Creation-Date: 2021-02-01 23:48+0300\n"
+"POT-Creation-Date: 2021-02-03 11:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,86 +17,90 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addon\globalPlugins\textnormalizer\__init__.py:41
+#: addon\globalPlugins\textnormalizer\__init__.py:42
 msgid "Text Normalizer Settings"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:44
+#: addon\globalPlugins\textnormalizer\__init__.py:46
 msgid "&Copy text to clipboard"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:48
+#: addon\globalPlugins\textnormalizer\__init__.py:50
 msgid "&Instant normalizing"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:52
+#: addon\globalPlugins\textnormalizer\__init__.py:54
+msgid "&Capitalize first letter"
+msgstr ""
+
+#: addon\globalPlugins\textnormalizer\__init__.py:58
 msgid "&Source text:"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:54
+#: addon\globalPlugins\textnormalizer\__init__.py:60
 msgid "&Normalize entered text"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:57
+#: addon\globalPlugins\textnormalizer\__init__.py:63
 msgid "N&ormalized text:"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:73
+#: addon\globalPlugins\textnormalizer\__init__.py:81
 msgid "Error saving settings"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:87
-#: addon\globalPlugins\textnormalizer\__init__.py:98
+#: addon\globalPlugins\textnormalizer\__init__.py:113
+#: addon\globalPlugins\textnormalizer\__init__.py:125
 msgid "Text Normalizer"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:130
+#: addon\globalPlugins\textnormalizer\__init__.py:163
 msgid "Normalize text from the clipboard"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:136
-#: addon\globalPlugins\textnormalizer\__init__.py:147
-#: addon\globalPlugins\textnormalizer\__init__.py:172
+#: addon\globalPlugins\textnormalizer\__init__.py:169
+#: addon\globalPlugins\textnormalizer\__init__.py:180
+#: addon\globalPlugins\textnormalizer\__init__.py:205
 msgid "No text to normalize"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:142
+#: addon\globalPlugins\textnormalizer\__init__.py:175
 msgid "Normalizes the selected text."
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:153
+#: addon\globalPlugins\textnormalizer\__init__.py:186
 msgid "Normalizes the last spoken phrase"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:161
+#: addon\globalPlugins\textnormalizer\__init__.py:194
 msgid "Normalizes text from navigator object"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:180
+#: addon\globalPlugins\textnormalizer\__init__.py:213
 msgid "Copy to clipboard"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:182
+#: addon\globalPlugins\textnormalizer\__init__.py:215
 msgid "No normalization to copy"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:183
+#: addon\globalPlugins\textnormalizer\__init__.py:216
 msgid "Copy last normalization to clipboard"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:187
+#: addon\globalPlugins\textnormalizer\__init__.py:220
 msgid "Shows the settings dialog"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:190
+#: addon\globalPlugins\textnormalizer\__init__.py:223
 msgid "Switches the function of automatic normalization"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:194
+#: addon\globalPlugins\textnormalizer\__init__.py:227
 msgid "Automatic normalization enabled"
 msgstr ""
 
-#: addon\globalPlugins\textnormalizer\__init__.py:198
+#: addon\globalPlugins\textnormalizer\__init__.py:231
 msgid "Automatic normalization disabled"
 msgstr ""
 
