@@ -166,6 +166,9 @@ class TextNormalizer():
 		newText = re.sub(r"([a-z])у([a-z])", r"\1y\2", newText)
 		newText = re.sub(r"([a-z])у", r"\1y", newText)
 		newText = re.sub(r"у([a-z])", r"y\1", newText)
+		newText = self.replace("сh", "ch", newText, True)
+		newText = self.replace("сe", "ce", newText, True)
+		newText = self.replace("Вo", "Bo", newText, True)
 		return newText
 
 def main():
