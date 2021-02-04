@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Idea:
@@ -7,17 +7,25 @@ https://habr.com/ru/post/86303/
 
 import re
 
+try: from logHandler import log
+except  ImportError: import logging as log
+
 class TextNormalizer():
 	"""Translates the letters of the alphabet mixed in normal"""
 
 	lang = "?"
 	Changes = False
+	IsRu100percent = False
+	IsEn100percent = False
+	
+	mixpattern = re.compile(r"\b([а-яё]+[a-z]+[а-яё]+|[a-z]+[а-яё]+[a-z]|[a-z]+[а-яё]|[а-яё]+[a-z])\b",
+		flags=re.I)
 
-	def replace(self, old, new, str, caseinsentive = False):
+	def replace(self, old, new, string, caseinsentive = False):
 		if caseinsentive:
-			return str.replace(old, new)
+			return string.replace(old, new)
 		else:
-			return re.sub(re.escape(old), new, str, flags=re.IGNORECASE)
+			return re.sub(re.escape(old), new, string, flags=re.IGNORECASE)
 
 	def CheckWord(self, word, change_case = True):
 		"""Check the word
@@ -29,7 +37,12 @@ class TextNormalizer():
 			str: The normalized word
 		"""
 
+		self.Changes = False
+		self.lang = "?"
+
 		newword = word
+		if len(newword.strip()) == 1:
+			return newword
 		# если есть цифры - не меняем
 		if re.search("[24579]", newword):
 			return newword
@@ -38,15 +51,15 @@ class TextNormalizer():
 			return newword
 		OnlyRu = "БбвГгДдЁёЖжЗзИиЙйЛлмнПптУФфЦцЧчШшЩщЪъЫыЬьЭэЮюЯя"
 		OnlyEn = "DdFfGghIiJjLlNQqRrSstUVvWwYZz"
-		Rus = "АаВЕеКкМНОоРрСсТуХхЗО1тиапьб"
-		Eng = "AaBEeKkMHOoPpCcTyXx30imu@nb6"
+		Rus = "АаВЕеКкМНОоРрСсТуХхЗОтиапьб"
+		Eng = "AaBEeKkMHOoPpCcTyXx30mu@nb6"
 
-		IsRu100percent = False
+		self.IsRu100percent = False
 		for c1 in word:
 			for c2 in OnlyRu:
-				IsRu100percent = IsRu100percent or (c1 == c2)
+				self.IsRu100percent = self.IsRu100percent or (c1 == c2)
 
-		if IsRu100percent:
+		if self.IsRu100percent:
 			self.lang = "ru"
 
 			#  конвертируем все сомнительные символы в русские
@@ -56,14 +69,14 @@ class TextNormalizer():
 					pass
 
 			for i in range(0, len(Rus)):
-				newword = newword.replace(Eng[i], Rus[i])
+				newword = self.replace(Eng[i], Rus[i], newword, True)
 
 		else:
-			IsEn100percent = False
+			self.IsEn100percent = False
 			for c1 in word:
 				for c2 in OnlyEn:
-					IsEn100percent = IsEn100percent or (c1 == c2)
-			if IsEn100percent:
+					self.IsEn100percent = self.IsEn100percent or (c1 == c2)
+			if self.IsEn100percent:
 				self.lang = "en"
 				# конвертируем все сомнительные символы в английские
 				for i in range(0, len(word)):
@@ -72,7 +85,7 @@ class TextNormalizer():
 						pass
 
 				for i in range(0, len(Eng)):
-					newword = newword.replace(Rus[i], Eng[i])
+					newword = self.replace(Rus[i], Eng[i], newword, True)
 
 		# Были ли замены?
 		self.Changes = newword != word
@@ -91,34 +104,68 @@ class TextNormalizer():
 		"""
 
 		newText = text
-		for word in re.findall("[\\w\\@]+", text, re.DOTALL + re.IGNORECASE):
-			newWord = self.CheckWord(word, change_case)
-			if self.Changes:
-				newText = newText.replace(word, newWord)
-		Rus = ["с", "у", "нет", "ее"]
-		Eng = ["c", "y", "heт", "ee"]
-		if text != newText:
-			newText = newText.replace("B", "В").replace("H", "Н")
-			for i in range(0, len(Rus)):
-				newText = self.replace(Eng[i], Rus[i], newText, False)
-			patterns = [
-				"[cс][kк][oо][pр][еe]",
-				"[kк][yу][pр][сc]",
-				"[kк][yу][pр][сc][eе]",
-				"[s][kк][yу][pр][eе]",
-				r"[a]([^dfgjmnqrsvwz]+)",
-				"[Hн][eе][tт]"
-			]
-			replaces = [
-			"скорее",
-			"курс",
-			"курсе",
-			"skype",
-			r"а\1",
-			"нет"
-			]
-			for i in range(0, len(patterns)):
-				newText = re.sub(patterns[i], replaces[i], newText, flags=re.IGNORECASE)
+		words = re.findall("[\\w\\@]+", newText, re.IGNORECASE)
+		words2 = words.copy()
+		words2.reverse()
+		for x in range(0, 3):
+			words3 = re.findall("[\\w]+", newText, flags=re.IGNORECASE)
+			words4 = [f for f in words3 if re.findall("[a-zA-Z]", f) and re.findall("[а-яА-ЯЁ]", f)]
+			for word in (words, words2, words4)[x]:
+				newWord = self.CheckWord(word, change_case)
+				if self.Changes:
+					newText = self.replace(word, newWord, newText, False)
+			Rus = ["с", "у", "нет", "ее"]
+			Eng = ["c", "y", "heт", "ee"]
+			if text != newText:
+				newText = newText.replace("B", "В")
+				for i in range(0, len(Rus)):
+					newText = self.replace(Eng[i], Rus[i], newText, False)
+				patterns = [
+					"[kк][аa][kк]",
+					"[tт][aа][kк]",
+					r"[a]([\s:,.?!_(){}=+-]+[а-яёА-ЯЁ])",
+					"[cс][kк][oо][pр][еe][еe]",
+					"[kк][yу][pр][сc]",
+					"[kк][yу][pр][сc][eе]",
+					"[s][kк][yу][pр][eе]",
+					"[HН][eе][tт]",
+					"тe",
+					"eг",
+					"дe",
+					"[cс][pр][oо][kк]",
+					"nа",
+					"HO",
+					"HY",
+					"CCCP",
+					"CCP"
+				]
+				replaces = [
+					"как",
+					"так",
+					r"а\1",
+					"скорее",
+					"курс",
+					"курсе",
+					"skype",
+					"нет",
+					"те",
+					"ег",
+					"де",
+					"срок",
+					"на",
+					"НА",
+					"НО",
+					"НУ",
+					"СССР",
+					"ССР",
+					"как"
+				]
+				for i in range(0, len(patterns)):
+					if text != newText:
+						newText = re.sub(patterns[i], replaces[i], newText, flags=re.IGNORECASE)
+		newText = re.sub(r"([a-z])у([a-z])", r"\1y\2", newText)
+		newText = re.sub(r"([a-z])у", r"\1y", newText)
+		newText = re.sub(r"у([a-z])", r"y\1", newText)
 		return newText
 
 def main():

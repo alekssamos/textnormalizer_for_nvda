@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import config
 import braille
 import scriptHandler
@@ -126,20 +127,29 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	def speakDecorator(self, speak):
 		def my_speak(speechSequence, *args, **kwargs):
-			try: braille.handler.message(txt)
-			except: pass
 			return speak(speechSequence, *args, **kwargs)
 		def wrapper(speechSequence, *args, **kwargs):
 			self.speechSequence = speechSequence
-			def checkByCharacters(ss):
+			def is_not_str(ss):
 				for i in speechSequence:
-					if isinstance(i, speech.CharacterModeCommand): return True
+					if not isinstance(i, str): return True
 				return False
-			if not tobool(config.conf["TextNormalizer"]["autoNormalize"]) or checkByCharacters(speechSequence):
+			if not tobool(config.conf["TextNormalizer"]["autoNormalize"]):
 				return speak(speechSequence, *args, **kwargs)
 			change_case = config.conf["TextNormalizer"]["change_case"]
-			text=" ".join([tn.CheckText(i, change_case) for i in speechSequence if isinstance(i, str)])
-			return speak([text], *args, **kwargs)
+			list_speechSequence = []
+			for i in speechSequence:
+				if isinstance(i, str):
+					list_speechSequence.append(tn.CheckText(i, change_case))
+				else:
+					list_speechSequence.append(i)
+			txt = " ".join([i for i in list_speechSequence if isinstance(i, str)])
+			self.lastnormalizedText = txt
+			try:
+				braille.handler.message(txt)
+			except:
+				pass
+			return speak(list_speechSequence, *args, **kwargs)
 		return wrapper
 
 
@@ -180,7 +190,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			ui.message(_("No text to normalize"))
 			return
 
-		TextNormalizer(self.normalizeHandler, text=text)
+		TextNormalizerThr(self.normalizeHandler, text=text)
 
 	@scriptHandler.script(
 		description=_("Normalizes the last spoken phrase")
