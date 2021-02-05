@@ -20,6 +20,11 @@ class TextNormalizer():
 	
 	mixpattern = re.compile(r"\b([а-яё]+[a-z]+[а-яё]+|[a-z]+[а-яё]+[a-z]|[a-z]+[а-яё]|[а-яё]+[a-z])\b",
 		flags=re.I)
+	dgpattern = re.compile(
+		"([0-9]+[k]|mln|mlrd|тыс|"
+		"(дол|руб|евр|уе|тен|руп|гр?в)[а-я]+|млн|млрд|^[0-9]+(г|кг|т|ц|гц|мгц|"
+		"мм|см|дм|м|(б|кб|мб|гб|тб)(ит|айт)?)$)",
+		flags=re.IGNORECASE)
 
 	def replace(self, old, new, string, caseinsentive = False):
 		if caseinsentive:
@@ -41,13 +46,26 @@ class TextNormalizer():
 		self.lang = "?"
 
 		newword = word
+
+		# убираем символ "мягкий перенос"
+		newword = newword.replace(chr(173), "")
+		# один символ не имеет смысла
 		if len(newword.strip()) == 1:
 			return newword
+
+		# Пропускаем хештеги, по скольку там могут быть упоминания через значёк @
+		if newword[0] == "#":
+			return newword
+
+		# обозначения чисел не меняем
+		if re.search(self.dgpattern, newword):
+			return newword
 		# если есть цифры - не меняем
-		if re.search("[24579]", newword):
+		if re.search("[124579]", newword):
 			return newword
 		# если в конце русского слова цифра - не меняем
-		if re.search("^[а-яё]+[0-9]$", newword):
+		# если у английского слова цифра три - тоже не меняем
+		if (re.search("^[а-яёА-ЯЁ]+[0-9]+$", newword)) or (re.search("^[a-zA-Z]+$", newword) and "3" in newword):
 			return newword
 		OnlyRu = "БбвГгДдЁёЖжЗзИиЙйЛлмнПптУФфЦцЧчШшЩщЪъЫыЬьЭэЮюЯя"
 		OnlyEn = "DdFfGghIiJjLlNQqRrSstUVvWwYZz"
@@ -104,11 +122,13 @@ class TextNormalizer():
 		"""
 
 		newText = text
-		words = re.findall("[\\w\\@]+", newText, re.IGNORECASE)
+		# убираем символ "мягкий перенос"
+		newText = newText.replace(chr(173), "")
+		words = re.findall("[\\w\\@#]+", newText, re.IGNORECASE)
 		words2 = words.copy()
 		words2.reverse()
 		for x in range(0, 3):
-			words3 = re.findall("[\\w]+", newText, flags=re.IGNORECASE)
+			words3 = re.findall("[\\w]+@#", newText, flags=re.IGNORECASE)
 			words4 = [f for f in words3 if re.findall("[a-zA-Z]", f) and re.findall("[а-яА-ЯЁ]", f)]
 			for word in (words, words2, words4)[x]:
 				newWord = self.CheckWord(word, change_case)
@@ -133,11 +153,12 @@ class TextNormalizer():
 					"eг",
 					"дe",
 					"[cс][pр][oо][kк]",
-					"nа",
-					"HO",
-					"HY",
 					"CCCP",
-					"CCP"
+					"CCP",
+					r"\b[HН][аa]\b",
+					r"\b[HН][eе]\b",
+					r"\b[HН][oо]\b",
+					r"\b[HН][уy]\b"
 				]
 				replaces = [
 					"как",
@@ -152,13 +173,12 @@ class TextNormalizer():
 					"ег",
 					"де",
 					"срок",
-					"на",
-					"НА",
-					"НО",
-					"НУ",
 					"СССР",
 					"ССР",
-					"как"
+					r"На",
+					r"Не",
+					r"Но",
+					r"Ну"
 				]
 				for i in range(0, len(patterns)):
 					if text != newText:

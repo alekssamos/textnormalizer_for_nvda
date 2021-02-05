@@ -119,6 +119,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		if globalVars.appArgs.secure: return
 
 		speech.speak = self.speakDecorator(speech.speak)
+		try:
+			speech.speakWithoutPauses=speech.SpeechWithoutPauses(speakFunc=speech.speak).speakWithoutPauses
+		except AttributeError:
+			pass
 
 		# Creates submenu of addon
 		gui.mainFrame.sysTrayIcon.Bind(wx.EVT_MENU,
