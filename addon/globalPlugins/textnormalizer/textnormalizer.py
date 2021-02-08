@@ -128,7 +128,7 @@ class TextNormalizer():
 		words2 = words.copy()
 		words2.reverse()
 		for x in range(0, 3):
-			words3 = re.findall("[\\w]+@#", newText, flags=re.IGNORECASE)
+			words3 = re.findall("[\\w@#]+", newText, flags=re.IGNORECASE)
 			words4 = [f for f in words3 if re.findall("[a-zA-Z]", f) and re.findall("[а-яА-ЯЁ]", f)]
 			for word in (words, words2, words4)[x]:
 				newWord = self.CheckWord(word, change_case)
