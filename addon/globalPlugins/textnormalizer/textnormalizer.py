@@ -47,6 +47,8 @@ class TextNormalizer():
 
 		newword = word
 
+		# в VK часто стал использоваться символ "ë" как русская буква "е".
+		newword = self.replace("ë", "е", newword, True)
 		# убираем символ "мягкий перенос"
 		newword = newword.replace(chr(173), "")
 		# один символ не имеет смысла
@@ -121,9 +123,9 @@ class TextNormalizer():
 			str: The normalized text
 		"""
 
+		# сразу убираем символ "мягкий перенос"
+		text  = text.replace(chr(173), "")
 		newText = text
-		# убираем символ "мягкий перенос"
-		newText = newText.replace(chr(173), "")
 		words = re.findall("[\\w\\@#]+", newText, re.IGNORECASE)
 		words2 = words.copy()
 		words2.reverse()
