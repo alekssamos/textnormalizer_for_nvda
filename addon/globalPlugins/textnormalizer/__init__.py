@@ -116,10 +116,16 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		super(GlobalPlugin, self).__init__()
 		if globalVars.appArgs.secure: return
 
-		speech.speak = self.speakDecorator(speech.speak)
 		try:
-			speech.speakWithoutPauses=speech.SpeechWithoutPauses(speakFunc=speech.speak).speakWithoutPauses
-		except AttributeError:
+			speech.speech.speak = self.speakDecorator(speech.speech.speak)
+		except:
+			speech.speak = self.speakDecorator(speech.speak)
+		try:
+			try:
+				speech.speechWithoutPauses.SpeechWithoutPauses.speakWithoutPauses = speech.speechWithoutPauses.SpeechWithoutPauses(speakFunc=speech.speech.speak).speakWithoutPauses
+			except AttributeError:
+				speech.speakWithoutPauses=speech.SpeechWithoutPauses(speakFunc=speech.speak).speakWithoutPauses
+		except:
 			pass
 
 		# Creates submenu of addon
