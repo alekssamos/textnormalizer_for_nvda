@@ -57,13 +57,11 @@ class TextNormalizerSettingsDialog(gui.SettingsDialog):
 		settingsSizerHelper.addItem(self.change_case_checkbox)
 
 		self.source_text = settingsSizerHelper.addLabeledControl(_("&Source text:"), wx.TextCtrl, value="")
-		settingsSizerHelper.addItem(self.source_text)
 		self.normalize_text = wx.Button(self, label=_("&Normalize entered text"))
 		self.normalize_text.Bind(wx.EVT_BUTTON, self.onNormalize_text)
 		settingsSizerHelper.addItem(self.normalize_text)
 		self.normalized_text = settingsSizerHelper.addLabeledControl(_("N&ormalized text:"), wx.TextCtrl, value="",
 			style=wx.TE_READONLY)
-		settingsSizerHelper.addItem(self.normalized_text)
 
 	def postInit(self):
 		self.source_text.SetFocus()
