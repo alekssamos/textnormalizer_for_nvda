@@ -129,9 +129,17 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			pass
 
 		# Creates submenu of addon
+		self.TextNormalizerSettingsItem = gui.mainFrame.sysTrayIcon.toolsMenu.Append(wx.ID_ANY, _("Text Normalizer"))
 		gui.mainFrame.sysTrayIcon.Bind(wx.EVT_MENU,
 			lambda e: gui.mainFrame._popupSettingsDialog(TextNormalizerSettingsDialog),
-			gui.mainFrame.sysTrayIcon.toolsMenu.Append(wx.ID_ANY, _("Text Normalizer")))
+			self.TextNormalizerSettingsItem)
+
+	def terminate(self):
+		try:
+			gui.mainFrame.sysTrayIcon.toolsMenu.RemoveItem(
+				self.TextNormalizerSettingsItem)
+		except:
+			pass
 
 	def speakDecorator(self, speak):
 		def my_speak(speechSequence, *args, **kwargs):
