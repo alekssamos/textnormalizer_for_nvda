@@ -1,21 +1,22 @@
-# Дополнение Text Normalizer для NVDA
+# Text Normalizer addon for NVDA
 
+Attention! This addon is intended exclusively for the Russian-speaking audience!
 
-### Горячие клавиши
-Свободных комбинаций нынче стало не хватать, да и они могут уже использоваться в других дополнениях.
+### Keyboard shortcuts
+There are not enough free combinations now, and they can already be used in other add-ons.
 
-Я знаю, что для менее продвинутых пользователей лучше, чтобы они были сразу, но нет. Я не придумал удобные свободные жесты.
+I know that it's better for less advanced users to have them right away, but no. I didn't come up with convenient free gestures.
 
-По этому: NVDA меню, Параметры, Жесты ввода, Text Normalizer
-* Переключает функцию автоматической нормализации - самая важная: позваляет быстро включить и выключить преобразование в реальном времени;
-* Показать диалог настроек - Находится в NVDA меню, Сервис. Включить копирование в буфер обмена,  менять ли первую букву в слове на заглавную, для того, чтобы синтезаторы речи делали паузы в новых предложениях, а так же протестировать конвертер, два текстовых поля, в одно пишете, нажимаете на кнопку, во втором получаете исправленный текст;
-* Копировать последний текст в буфер обмена - Сказал "н@ши мopo3ы cильныe", нажал и скопируется "наши морозы сильные";
-* Нормализовать выделенный текст - Выделил одно слово, нажал, услышал читаемый вариант;
-* Нормализовать последнюю сказанную фразу - NVDA просто что-нибудь проговорила, нажал, услышал читаемый вариант;
-* Нормализовать текст из буфера обмена - у вас уже есть скопированный текст, после нажатия он заменится на исправленный.
-* Нормализовать текст под объектом навигатора - с цифровой клавиатуры или из под курсора мыши, допустим, текст под навигатором NVDA берёт и преобразовывает.
-### Примеры:
-> Слушайте сначала без дополнения, затем с ним.
+For this: NVDA Menu, Parameters, Input Gestures, Text Normalizer
+* Switches the automatic normalization function - the most important: allows you to quickly turn on and off the real-time conversion;
+* Show the settings dialog-Located in the NVDA menu, Tools. Enable copying to the clipboard, whether to change the first letter in a word to a capital one, in order for speech synthesizers to pause in new sentences, as well as test the converter, two text fields, write in one, click on the button, get the corrected text in the second;
+* Copy the last text to the clipboard - Said "hеllо wоrld", clicked and copied "hello world";
+* Normalize the selected text - Selected one word, clicked, heard a readable version;
+* Normalize the last spoken phrase - NVDA just said something, clicked, heard a readable version;
+* Normalize the text from the clipboard - you already have the copied text, after clicking it will be replaced with the corrected one.
+* Normalize the text under the navigator object - from the numeric keypad or from under the mouse cursor, for example, NVDA takes the text under the navigator and converts it.
+### Examples:
+> Listen first without the addon, then with it.
 
 * Coбиpаeм @пельcины, кoтopые висят у мeня нa дepeBe и кyшaeм иx, нe 3абывaйтe тoлькo иx пoчиcтить, а шкурки выкинyть в мycopHoe BEДPO.
 * BAШ 6aлaнс мeHee 5 рyблeй, пoпoлнитe BAШ Cчёт.
