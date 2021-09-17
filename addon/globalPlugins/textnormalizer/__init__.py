@@ -145,7 +145,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		def my_speak(speechSequence, *args, **kwargs):
 			return speak(speechSequence, *args, **kwargs)
 		def wrapper(speechSequence, *args, **kwargs):
-			self.speechSequence = speechSequence
 			def is_not_str(ss):
 				for i in speechSequence:
 					if not isinstance(i, str): return True
