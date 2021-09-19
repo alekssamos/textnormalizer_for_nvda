@@ -152,7 +152,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				return False
 			if not tobool(config.conf["TextNormalizer"]["autoNormalize"]):
 				return speak(speechSequence, *args, **kwargs)
-			change_case = config.conf["TextNormalizer"]["change_case"]
+			change_case = tobool(config.conf["TextNormalizer"]["change_case"])
 			list_speechSequence = []
 			for i in speechSequence:
 				if isinstance(i, str):
@@ -173,7 +173,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		self.lastnormalizedText = "".join(text)
 		ui.message(self.lastnormalizedText)
 
-		if config.conf["TextNormalizer"]["copyToClipBoard"]:
+		if tobool(config.conf["TextNormalizer"]["copyToClipBoard"]):
 			api.copyToClip(self.lastnormalizedText)
 
 	def getSelectedText(self):
