@@ -49,6 +49,16 @@ class TextNormalizer():
 
 		# в VK часто стал использоваться символ "ë" как русская буква "е".
 		newword = self.replace("ë", "е", newword, True)
+		# остальные символы из постов VK
+		lettersstrng = {
+			"α":"а",
+			"ʍ":"м",
+			"∂":"д",
+			"ū":"о",
+			"ū":"й"
+		}
+		for k, v in lettersstrng.items():
+			newword = self.replace(k, v, newword, True)
 		# убираем символ "мягкий перенос"
 		newword = newword.replace(chr(173), "")
 		# один символ не имеет смысла
@@ -71,8 +81,8 @@ class TextNormalizer():
 			return newword
 		OnlyRu = "БбвГгДдЁёЖжЗзИиЙйЛлмнПптУФфЦцЧчШшЩщЪъЫыЬьЭэЮюЯя"
 		OnlyEn = "DdFfGghIiJjLlNQqRrSstUVvWwYZz"
-		Rus = "АаВЕеКкМНОоРрСсТуХхЗОтиапьб"
-		Eng = "AaBEeKkMHOoPpCcTyXx30mu@nb6"
+		Rus = "АаВЕеКкМНОоРрСсТуХхЗОтиапьбт"
+		Eng = "AaBEeKkMHOoPpCcTyXx30mu@nb6m"
 
 		self.IsRu100percent = False
 		for c1 in word:
@@ -140,6 +150,10 @@ class TextNormalizer():
 			Eng = ["c", "y", "heт", "ee"]
 			if text != newText:
 				newText = newText.replace("B", "В")
+				newText = newText.replace(" o ", " о ")
+				newText = newText.replace(" O ", " О ")
+				newText = newText.replace(" c ", " с ")
+				newText = newText.replace(" C ", " С ")
 				for i in range(0, len(Rus)):
 					newText = self.replace(Eng[i], Rus[i], newText, False)
 				patterns = [
@@ -160,7 +174,15 @@ class TextNormalizer():
 					r"\b[HН][аa]\b",
 					r"\b[HН][eе]\b",
 					r"\b[HН][oо]\b",
-					r"\b[HН][уy]\b"
+					r"\b[HН][уy]\b",
+					r"([а-яёА-ЯЁ])m",
+					r"m([а-яёА-ЯЁ])",
+					"∂",
+					"α",
+					"ū",
+					"meх",
+					r"\bom\b",
+					r"([а-яёА-ЯЁ])pu"
 				]
 				replaces = [
 					"как",
@@ -180,7 +202,15 @@ class TextNormalizer():
 					r"На",
 					r"Не",
 					r"Но",
-					r"Ну"
+					r"Ну",
+					r"\1т",
+					r"т\1",
+					"д",
+					"а",
+					"й",
+					"тех",
+					"от",
+					r"\1ри"
 				]
 				for i in range(0, len(patterns)):
 					if text != newText:
