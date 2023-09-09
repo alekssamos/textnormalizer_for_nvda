@@ -60,7 +60,7 @@ class TextNormalizer():
 		for k, v in lettersstrng.items():
 			newword = self.replace(k, v, newword, True)
 		# убираем символ "мягкий перенос"
-		newword = newword.replace(chr(173), "")
+		newword = newword.replace(chr(173), "").replace(chr(8205), "")
 		# один символ не имеет смысла
 		if len(newword.strip()) == 1:
 			return newword
