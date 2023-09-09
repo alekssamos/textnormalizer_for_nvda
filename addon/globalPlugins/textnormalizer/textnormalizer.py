@@ -134,7 +134,7 @@ class TextNormalizer():
 		"""
 
 		# сразу убираем символ "мягкий перенос"
-		text  = text.replace(chr(173), "")
+		text  = text.replace("\u200d", "").replace(chr(173), "").replace(chr(8205), "")
 		newText = text
 		words = re.findall("[\\w\\@#]+", newText, re.IGNORECASE)
 		words2 = words.copy()
