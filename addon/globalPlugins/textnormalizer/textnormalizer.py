@@ -26,6 +26,20 @@ class TextNormalizer():
 		"мм|см|дм|м|(б|кб|мб|гб|тб)(ит|айт)?)$)",
 		flags=re.IGNORECASE)
 
+	def __init__(self):
+		self.lettersstrng = {
+			"α":"а",
+			"ʍ":"м",
+			"∂":"д",
+			"ū":"о",
+			"ū":"й"
+		}
+		self.OnlyRu = "БбвГгДдЁёЖжЗзИиЙйЛлмнПптУФфЦцЧчШшЩщЪъЫыЬьЭэЮюЯя"
+		self.OnlyEn = "DdFfGghIiJjLlNQqRrSstUVvWwYZz"
+		self.Rus = "АаВЕеКкМНОоРрСсТуХхЗОтиапьбт"
+		self.Eng = "AaBEeKkMHOoPpCcTyXx30mu@nb6m"
+
+
 	def replace(self, old, new, string, case_insensitive = False):
 		if case_insensitive:
 			return string.replace(old, new)
@@ -45,19 +59,10 @@ class TextNormalizer():
 		self.Changes = False
 		self.lang = "?"
 
-		newword = word
-
 		# в VK часто стал использоваться символ "ë" как русская буква "е".
-		newword = self.replace("ë", "е", newword, True)
+		newword = self.replace("ë", "е", word, True)
 		# остальные символы из постов VK
-		lettersstrng = {
-			"α":"а",
-			"ʍ":"м",
-			"∂":"д",
-			"ū":"о",
-			"ū":"й"
-		}
-		for k, v in lettersstrng.items():
+		for k, v in self.lettersstrng.items():
 			newword = self.replace(k, v, newword, True)
 		# убираем символ "мягкий перенос"
 		newword = newword.replace("\u200d", "").replace(chr(173), "").replace(chr(8205), "")
@@ -79,37 +84,33 @@ class TextNormalizer():
 		# если у английского слова цифра три - тоже не меняем
 		if (re.search("^[а-яёА-ЯЁ]+[0-9]+$", newword)) or (re.search("^[a-zA-Z]+$", newword) and "3" in newword):
 			return newword
-		OnlyRu = "БбвГгДдЁёЖжЗзИиЙйЛлмнПптУФфЦцЧчШшЩщЪъЫыЬьЭэЮюЯя"
-		OnlyEn = "DdFfGghIiJjLlNQqRrSstUVvWwYZz"
-		Rus = "АаВЕеКкМНОоРрСсТуХхЗОтиапьбт"
-		Eng = "AaBEeKkMHOoPpCcTyXx30mu@nb6m"
 
 		self.IsRu100percent = False
 		for c1 in word:
-			for c2 in OnlyRu:
+			for c2 in self.OnlyRu:
 				self.IsRu100percent = self.IsRu100percent or (c1 == c2)
 
 		if self.IsRu100percent:
 			self.lang = "ru"
 
-			for i in range(0, len(Rus)):
-				newword = self.replace(Eng[i], Rus[i], newword, True)
+			for i in range(0, len(self.Rus)):
+				newword = self.replace(self.Eng[i], self.Rus[i], newword, True)
 
 		else:
 			self.IsEn100percent = False
 			for c1 in word:
-				for c2 in OnlyEn:
+				for c2 in self.OnlyEn:
 					self.IsEn100percent = self.IsEn100percent or (c1 == c2)
 			if self.IsEn100percent:
 				self.lang = "en"
 				# конвертируем все сомнительные символы в английские
 				for i in range(0, len(word)):
-					if word[i] in Rus:
+					if word[i] in self.Rus:
 						# помечаем word[i] как "фальшивый"
 						pass
 
-				for i in range(0, len(Eng)):
-					newword = self.replace(Rus[i], Eng[i], newword, True)
+				for i in range(0, len(self.Eng)):
+					newword = self.replace(self.Rus[i], self.Eng[i], newword, True)
 
 		# Были ли замены?
 		self.Changes = newword != word
