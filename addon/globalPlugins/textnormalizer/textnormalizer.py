@@ -103,11 +103,6 @@ class TextNormalizer():
 					self.IsEn100percent = self.IsEn100percent or (c1 == c2)
 			if self.IsEn100percent:
 				self.lang = "en"
-				# конвертируем все сомнительные символы в английские
-				for i in range(0, len(word)):
-					if word[i] in self.Rus:
-						# помечаем word[i] как "фальшивый"
-						pass
 
 				for i in range(0, len(self.Eng)):
 					newword = self.replace(self.Rus[i], self.Eng[i], newword, True)
