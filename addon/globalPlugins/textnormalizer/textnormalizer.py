@@ -5,10 +5,19 @@ Idea:
 https://habr.com/ru/post/86303/
 """
 
+from functools import lru_cache
 import re
 
 try: from logHandler import log
 except  ImportError: import logging as log
+
+
+def normalizer_replace_text(old, new, string, case_insensitive = False):
+	if case_insensitive:
+		return string.replace(old, new)
+	else:
+		return re.sub(re.escape(old), new, string, flags=re.IGNORECASE)
+
 
 class TextNormalizer():
 	"""Translates the letters of the alphabet mixed in normal"""
@@ -96,13 +105,6 @@ class TextNormalizer():
 		]
 
 
-
-	def replace(self, old, new, string, case_insensitive = False):
-		if case_insensitive:
-			return string.replace(old, new)
-		else:
-			return re.sub(re.escape(old), new, string, flags=re.IGNORECASE)
-
 	def CheckWord(self, word, change_case = True):
 		"""Check the word
 
@@ -117,10 +119,10 @@ class TextNormalizer():
 		self.lang = "?"
 
 		# в VK часто стал использоваться символ "ë" как русская буква "е".
-		newword = self.replace("ë", "е", word, True)
+		newword = normalizer_replace_text("ë", "е", word, True)
 		# остальные символы из постов VK
 		for k, v in self.lettersstrng.items():
-			newword = self.replace(k, v, newword, True)
+			newword = normalizer_replace_text(k, v, newword, True)
 		# один символ не имеет смысла
 		if len(newword.strip()) == 1:
 			return newword
@@ -149,7 +151,7 @@ class TextNormalizer():
 			self.lang = "ru"
 
 			for i in range(0, len(self.Rus)):
-				newword = self.replace(self.Eng[i], self.Rus[i], newword, True)
+				newword = normalizer_replace_text(self.Eng[i], self.Rus[i], newword, True)
 
 		else:
 			self.IsEn100percent = False
@@ -160,7 +162,7 @@ class TextNormalizer():
 				self.lang = "en"
 
 				for i in range(0, len(self.Eng)):
-					newword = self.replace(self.Rus[i], self.Eng[i], newword, True)
+					newword = normalizer_replace_text(self.Rus[i], self.Eng[i], newword, True)
 
 		# Были ли замены?
 		self.Changes = newword != word
@@ -189,7 +191,7 @@ class TextNormalizer():
 			for word in (words, words2, words4)[x]:
 				newWord = self.CheckWord(word, change_case)
 				if self.Changes:
-					newText = self.replace(word, newWord, newText, False)
+					newText = normalizer_replace_text(word, newWord, newText, False)
 			Rus = ["с", "у", "нет", "ее"]
 			Eng = ["c", "y", "heт", "ee"]
 			if text != newText:
@@ -199,16 +201,16 @@ class TextNormalizer():
 				newText = newText.replace(" c ", " с ")
 				newText = newText.replace(" C ", " С ")
 				for i in range(0, len(Rus)):
-					newText = self.replace(Eng[i], Rus[i], newText, False)
+					newText = normalizer_replace_text(Eng[i], Rus[i], newText, False)
 				for i in range(0, len(self.patterns)):
 					if text != newText:
 						newText = re.sub(self.patterns[i], self.replaces[i], newText, flags=re.IGNORECASE)
 		newText = re.sub(r"([a-z])у([a-z])", r"\1y\2", newText)
 		newText = re.sub(r"([a-z])у", r"\1y", newText)
 		newText = re.sub(r"у([a-z])", r"y\1", newText)
-		newText = self.replace("сh", "ch", newText, True)
-		newText = self.replace("сe", "ce", newText, True)
-		newText = self.replace("Вo", "Bo", newText, True)
+		newText = normalizer_replace_text("сh", "ch", newText, True)
+		newText = normalizer_replace_text("сe", "ce", newText, True)
+		newText = normalizer_replace_text("Вo", "Bo", newText, True)
 		return newText
 
 def main():
