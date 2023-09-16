@@ -38,6 +38,63 @@ class TextNormalizer():
 		self.OnlyEn = "DdFfGghIiJjLlNQqRrSstUVvWwYZz"
 		self.Rus = "АаВЕеКкМНОоРрСсТуХхЗОтиапьбт"
 		self.Eng = "AaBEeKkMHOoPpCcTyXx30mu@nb6m"
+		self.patterns = [
+			"[kк][аa][kк]",
+			"[tт][aа][kк]",
+			r"[a]([\s:,.?!_(){}=+-]+[а-яёА-ЯЁ])",
+			"[cс][kк][oо][pр][еe][еe]",
+			"[kк][yу][pр][сc]",
+			"[kк][yу][pр][сc][eе]",
+			"[s][kк][yу][pр][eе]",
+			"[HН][eе][tт]",
+			"тe",
+			"eг",
+			"дe",
+			"[cс][pр][oо][kк]",
+			"CCCP",
+			"CCP",
+			r"\b[HН][аa]\b",
+			r"\b[HН][eе]\b",
+			r"\b[HН][oо]\b",
+			r"\b[HН][уy]\b",
+			r"([а-яёА-ЯЁ])m",
+			r"m([а-яёА-ЯЁ])",
+			"∂",
+			"α",
+			"ū",
+			"meх",
+			r"\bom\b",
+			r"([а-яёА-ЯЁ])pu"
+		]
+		self.replaces = [
+			"как",
+			"так",
+			r"а\1",
+			"скорее",
+			"курс",
+			"курсе",
+			"skype",
+			"нет",
+			"те",
+			"ег",
+			"де",
+			"срок",
+			"СССР",
+			"ССР",
+			r"На",
+			r"Не",
+			r"Но",
+			r"Ну",
+			r"\1т",
+			r"т\1",
+			"д",
+			"а",
+			"й",
+			"тех",
+			"от",
+			r"\1ри"
+		]
+
 
 
 	def replace(self, old, new, string, case_insensitive = False):
@@ -64,8 +121,6 @@ class TextNormalizer():
 		# остальные символы из постов VK
 		for k, v in self.lettersstrng.items():
 			newword = self.replace(k, v, newword, True)
-		# убираем символ "мягкий перенос"
-		newword = newword.replace("\u200d", "").replace(chr(173), "").replace(chr(8205), "")
 		# один символ не имеет смысла
 		if len(newword.strip()) == 1:
 			return newword
@@ -124,8 +179,7 @@ class TextNormalizer():
 		"""
 
 		# сразу убираем символ "мягкий перенос"
-		text  = text.replace("\u200d", "").replace(chr(173), "").replace(chr(8205), "")
-		newText = text
+		newText = text.replace("\u200d", "").replace(chr(173), "").replace(chr(8205), "")
 		words = re.findall("[\\w\\@#]+", newText, re.IGNORECASE)
 		words2 = words.copy()
 		words2.reverse()
@@ -146,65 +200,9 @@ class TextNormalizer():
 				newText = newText.replace(" C ", " С ")
 				for i in range(0, len(Rus)):
 					newText = self.replace(Eng[i], Rus[i], newText, False)
-				patterns = [
-					"[kк][аa][kк]",
-					"[tт][aа][kк]",
-					r"[a]([\s:,.?!_(){}=+-]+[а-яёА-ЯЁ])",
-					"[cс][kк][oо][pр][еe][еe]",
-					"[kк][yу][pр][сc]",
-					"[kк][yу][pр][сc][eе]",
-					"[s][kк][yу][pр][eе]",
-					"[HН][eе][tт]",
-					"тe",
-					"eг",
-					"дe",
-					"[cс][pр][oо][kк]",
-					"CCCP",
-					"CCP",
-					r"\b[HН][аa]\b",
-					r"\b[HН][eе]\b",
-					r"\b[HН][oо]\b",
-					r"\b[HН][уy]\b",
-					r"([а-яёА-ЯЁ])m",
-					r"m([а-яёА-ЯЁ])",
-					"∂",
-					"α",
-					"ū",
-					"meх",
-					r"\bom\b",
-					r"([а-яёА-ЯЁ])pu"
-				]
-				replaces = [
-					"как",
-					"так",
-					r"а\1",
-					"скорее",
-					"курс",
-					"курсе",
-					"skype",
-					"нет",
-					"те",
-					"ег",
-					"де",
-					"срок",
-					"СССР",
-					"ССР",
-					r"На",
-					r"Не",
-					r"Но",
-					r"Ну",
-					r"\1т",
-					r"т\1",
-					"д",
-					"а",
-					"й",
-					"тех",
-					"от",
-					r"\1ри"
-				]
-				for i in range(0, len(patterns)):
+				for i in range(0, len(self.patterns)):
 					if text != newText:
-						newText = re.sub(patterns[i], replaces[i], newText, flags=re.IGNORECASE)
+						newText = re.sub(self.patterns[i], self.replaces[i], newText, flags=re.IGNORECASE)
 		newText = re.sub(r"([a-z])у([a-z])", r"\1y\2", newText)
 		newText = re.sub(r"([a-z])у", r"\1y", newText)
 		newText = re.sub(r"у([a-z])", r"y\1", newText)
