@@ -26,8 +26,8 @@ class TextNormalizer():
 		"мм|см|дм|м|(б|кб|мб|гб|тб)(ит|айт)?)$)",
 		flags=re.IGNORECASE)
 
-	def replace(self, old, new, string, caseinsentive = False):
-		if caseinsentive:
+	def replace(self, old, new, string, case_insensitive = False):
+		if case_insensitive:
 			return string.replace(old, new)
 		else:
 			return re.sub(re.escape(old), new, string, flags=re.IGNORECASE)
