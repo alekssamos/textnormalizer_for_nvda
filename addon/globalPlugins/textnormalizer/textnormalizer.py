@@ -12,6 +12,7 @@ try: from logHandler import log
 except  ImportError: import logging as log
 
 
+@lru_cache(16384)
 def normalizer_replace_text(old, new, string, case_insensitive = False):
 	if case_insensitive:
 		return string.replace(old, new)
