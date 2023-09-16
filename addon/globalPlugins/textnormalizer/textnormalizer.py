@@ -92,12 +92,6 @@ class TextNormalizer():
 		if self.IsRu100percent:
 			self.lang = "ru"
 
-			#  конвертируем все сомнительные символы в русские
-			for i in range(0, len(word)):
-				if word[i] in Eng:
-					# помечаем word[i] как "фальшивый"
-					pass
-
 			for i in range(0, len(Rus)):
 				newword = self.replace(Eng[i], Rus[i], newword, True)
 
