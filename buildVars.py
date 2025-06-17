@@ -19,7 +19,7 @@ addon_info = {
 	# Translators: Long description to be shown for this add-on on add-on information from add-ons manager
 	"addon_description": _("""Translates the letters of the alphabet mixed in normal."""),
 	# version
-	"addon_version": "2025.06.17",
+	"addon_version": "2025.06.18",
 	# Author(s)
 	"addon_author": u"alekssamos <aleks-samos@yandex.ru>",
 	# URL for the add-on documentation support

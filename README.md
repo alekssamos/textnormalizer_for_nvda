@@ -1,6 +1,6 @@
 # Дополнение Text Normalizer для NVDA
 
-[Скачать версию 2025.06.17](https://github.com/alekssamos/textnormalizer_for_nvda/releases/latest/download/textnormalizer-2025.06.16.nvda-addon)
+[Скачать](https://github.com/alekssamos/textnormalizer_for_nvda/releases/latest/download/textnormalizer.nvda-addon)
 
 ### Горячие клавиши
 Свободных комбинаций нынче стало не хватать, да и они могут уже использоваться в других дополнениях.
