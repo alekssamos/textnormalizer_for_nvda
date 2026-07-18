@@ -48,6 +48,8 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
     needs: ["build"]
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v7
     - name: download releases files
@@ -58,6 +60,6 @@ jobs:
     - name: Release
       uses: softprops/action-gh-release@v3
       with:
-        files: packaged_addon/*.nvda-addon
+        files: ./*.nvda-addon
         fail_on_unmatched_files: true
         prerelease: ${{ contains(github.ref, '-') }}
